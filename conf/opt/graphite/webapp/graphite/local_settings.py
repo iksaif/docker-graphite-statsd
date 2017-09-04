@@ -213,3 +213,9 @@ if (os.getenv("MEMCACHE_HOST") is not None):
 if (os.getenv("DEFAULT_CACHE_DURATION") is not None):
     DEFAULT_CACHE_DURATION = int(os.getenv("CACHE_DURATION"))
 
+# TODO bg settings
+STORAGE_FINDERS = ['biggraphite.plugins.graphite.Finder']
+BG_CASSANDRA_KEYSPACE = 'biggraphite'
+BG_CASSANDRA_CONTACT_POINTS = '127.0.0.1'
+BG_DRIVER = 'cassandra'
+BG_CACHE = 'memory'

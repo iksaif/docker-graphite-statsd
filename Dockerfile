@@ -20,13 +20,17 @@ RUN apt-get -y update \
   python-rrdtool \
   pkg-config \
   nodejs \
+  memcached \
+  wget \
   && rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip
+RUN pip install --upgrade pip
 
 # fix python dependencies (LTS Django and newer memcached/txAMQP)
 RUN pip install django==1.8.18 \
   python-memcached==1.53 \
-  txAMQP==0.6.2 \
-  && pip install --upgrade pip
+  txAMQP==0.6.2
 
 # install whisper
 RUN git clone -b 1.0.2 --depth 1 https://github.com/graphite-project/whisper.git /usr/local/src/whisper
@@ -50,6 +54,12 @@ ADD conf/opt/graphite/webapp/graphite/app_settings.py /opt/graphite/webapp/graph
 WORKDIR /opt/graphite/webapp
 RUN mkdir -p /var/log/graphite/ \
   && PYTHONPATH=/opt/graphite/webapp django-admin.py collectstatic --noinput --settings=graphite.settings
+
+# Install BigGraphite
+RUN pip install biggraphite
+
+# Install Cassandra
+RUN wget http://www-eu.apache.org/dist/cassandra/3.11.0/apache-cassandra-3.11.0-bin.tar.gz && tar -xf apache-cassandra-3.11.0-bin.tar.gz
 
 # install statsd
 RUN git clone -b v0.7.2 https://github.com/etsy/statsd.git /opt/statsd
@@ -76,6 +86,8 @@ ADD conf/etc/service/carbon-aggregator/run /etc/service/carbon-aggregator/run
 ADD conf/etc/service/graphite/run /etc/service/graphite/run
 ADD conf/etc/service/statsd/run /etc/service/statsd/run
 ADD conf/etc/service/nginx/run /etc/service/nginx/run
+ADD conf/etc/service/cassandra/run /etc/service/cassandra/run
+ADD conf/etc/service/memcached/run /etc/service/memcached/run
 
 # default conf setup
 ADD conf /etc/graphite-statsd/conf

@@ -16,6 +16,9 @@ if [[ -z $graphite_dir_contents ]]; then
   cd /usr/local/src/graphite-web && python ./setup.py install
 fi
 if [[ -z $graphite_storage_dir_contents ]]; then
+  # TODO: setup biggraphite here
+  # bin/cqlsh < share/schema.cql
+  # bgutil syncdb
   /usr/local/bin/django_admin_init.exp
 fi
 if [[ -z $graphite_conf_dir_contents ]]; then
@@ -33,4 +36,3 @@ if [[ -z $statsd_dir_contents ]]; then
   git clone -b v0.7.2 https://github.com/etsy/statsd.git /opt/statsd
   cp $conf_dir/opt/statsd/config.js /opt/statsd/config.js
 fi
-
